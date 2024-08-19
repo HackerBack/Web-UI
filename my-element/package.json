@@ -16,19 +16,21 @@
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/vue-fontawesome": "^3.0.8",
+    "axios": "^1.7.4",
     "lodash-es": "^4.17.21",
     "vite-plugin-eslint": "^1.8.1",
     "vue": "^3.4.29"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.8.0",
-    "@types/lodash-es": "^4.17.6",
     "@tsconfig/node20": "^20.1.4",
+    "@types/lodash-es": "^4.17.6",
     "@types/node": "^20.14.5",
     "@vitejs/plugin-vue": "^5.0.5",
     "@vitejs/plugin-vue-jsx": "^4.0.0",
     "@vue/eslint-config-prettier": "^9.0.0",
     "@vue/eslint-config-typescript": "^13.0.0",
+    "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.5.1",
     "eslint": "^8.57.0",
     "eslint-plugin-vue": "^9.27.0",
@@ -40,7 +42,9 @@
     "postcss-nested": "^6.0.1",
     "prettier": "^3.2.5",
     "typescript": "~5.4.0",
+    "unplugin-vue-macros": "^2.11.6",
     "vite": "^5.3.1",
+    "vitest": "^2.0.5",
     "vue-tsc": "^2.0.21"
   }
 }
