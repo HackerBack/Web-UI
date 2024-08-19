@@ -1,22 +1,42 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { createPopper } from '@popperjs/core'
+import type { Instance } from '@popperjs/core'
 import Button from './components/Button/Button.vue'
 import Collapse from './components/Collapse/Collapse.vue'
 import CollapseItem from './components/Collapse/CollapseItem.vue'
 import Icon from './components/Icon/Icon.vue'
 import type { ButtonInstance } from './components/Button/types'
 const buttonRef = ref<ButtonInstance | null>(null)
+const overlayNode = ref<HTMLElement>()
+const triggerNode = ref<HTMLElement>()
+let popperInstance: Instance | null = null
 const openedValue = ref(['a'])
 onMounted(() => {
   if (buttonRef.value) {
     console.log('buttonRef', buttonRef.value.ref)
   }
+  if (overlayNode.value && triggerNode.value) {
+    popperInstance = createPopper(triggerNode.value, overlayNode.value, { placement: 'right' })
+  }
+
+  setTimeout(() => {
+    popperInstance?.setOptions({ placement: 'bottom' })
+  }, 2000)
 })
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+    <img
+      alt="Vue logo"
+      class="logo"
+      src="./assets/logo.svg"
+      width="125"
+      height="125"
+      ref="triggerNode"
+    />
+    <div ref="overlayNode"><h1>Hello Tooltip</h1></div>
   </header>
   <!-- <Icon icon="fa-solid fa-user-secret" /> -->
   <Icon icon="arrow-up" size="2xl" type="danger" color="yellow" />
