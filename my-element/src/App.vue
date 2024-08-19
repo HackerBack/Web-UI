@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import Tooltip from './components/Tooltip/Tooltip.vue'
 import { createPopper } from '@popperjs/core'
 import type { Instance } from '@popperjs/core'
 import Button from './components/Button/Button.vue'
@@ -10,6 +11,7 @@ import type { ButtonInstance } from './components/Button/types'
 const buttonRef = ref<ButtonInstance | null>(null)
 const overlayNode = ref<HTMLElement>()
 const triggerNode = ref<HTMLElement>()
+const trigger = ref<any>('hover')
 let popperInstance: Instance | null = null
 const openedValue = ref(['a'])
 onMounted(() => {
@@ -28,15 +30,12 @@ onMounted(() => {
 
 <template>
   <header>
-    <img
-      alt="Vue logo"
-      class="logo"
-      src="./assets/logo.svg"
-      width="125"
-      height="125"
-      ref="triggerNode"
-    />
-    <div ref="overlayNode"><h1>Hello Tooltip</h1></div>
+    <Tooltip placement="right" :trigger="trigger">
+      <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+      <template #content>
+        <h1>Hello Tooltip</h1>
+      </template>
+    </Tooltip>
   </header>
   <!-- <Icon icon="fa-solid fa-user-secret" /> -->
   <Icon icon="arrow-up" size="2xl" type="danger" color="yellow" />
