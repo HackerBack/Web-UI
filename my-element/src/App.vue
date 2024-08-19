@@ -8,10 +8,18 @@ import Collapse from './components/Collapse/Collapse.vue'
 import CollapseItem from './components/Collapse/CollapseItem.vue'
 import Icon from './components/Icon/Icon.vue'
 import type { ButtonInstance } from './components/Button/types'
+import type { TooltipInstance } from './components/Tooltip/types'
 const buttonRef = ref<ButtonInstance | null>(null)
+const tooltipRef = ref<TooltipInstance | null>(null)
 const overlayNode = ref<HTMLElement>()
 const triggerNode = ref<HTMLElement>()
 const trigger = ref<any>('click')
+const open = () => {
+  tooltipRef?.value?.show()
+}
+const close = () => {
+  tooltipRef?.value?.hide()
+}
 let popperInstance: Instance | null = null
 const openedValue = ref(['a'])
 onMounted(() => {
@@ -30,7 +38,7 @@ onMounted(() => {
 
 <template>
   <header>
-    <Tooltip placement="right" :trigger="trigger">
+    <Tooltip placement="right" :trigger="trigger" manual ref="tooltipRef">
       <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
       <template #content>
         <h1>Hello Tooltip</h1>
@@ -40,8 +48,8 @@ onMounted(() => {
   <!-- <Icon icon="fa-solid fa-user-secret" /> -->
   <Icon icon="arrow-up" size="2xl" type="danger" color="yellow" />
   <main>
-    <Button ref="buttonRef">Test Button</Button>
-    <Button plain>Plain Button</Button>
+    <Button ref="buttonRef" @click="open">Test Button</Button>
+    <Button plain @click="close">Plain Button</Button>
     <Button round>Round Button</Button>
     <Button circle>VK</Button>
     <Button disabled>Disabled Button</Button><br /><br />

@@ -11,10 +11,10 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue'
+import { ref, watch, reactive, onUnmounted } from 'vue'
 import { createPopper } from '@popperjs/core'
 import type { Instance } from '@popperjs/core'
-import type { TooltipProps, TooltipEmits } from './types'
+import type { TooltipProps, TooltipEmits, TooltipInstance } from './types'
 import useClickOutside from '@/hooks/useClickOutside'
 const props = withDefaults(defineProps<TooltipProps>(), {
   placement: 'bottom',
@@ -41,7 +41,7 @@ const close = () => {
   emits('visible-change', false)
 }
 useClickOutside(popperContainerNode, () => {
-  if (props.trigger === 'click' && isOpen.value) {
+  if (props.trigger === 'click' && isOpen.value && !props.manual) {
     close()
   }
 })
@@ -53,7 +53,20 @@ const attachEvents = () => {
     events['click'] = togglePopper
   }
 }
-attachEvents()
+if (!props.manual) {
+  attachEvents()
+}
+watch(
+  () => props.manual,
+  (isManual) => {
+    if (isManual) {
+      events = {}
+      outerEvents = {}
+    } else {
+      attachEvents()
+    }
+  }
+)
 watch(
   () => props.trigger,
   (newTrigger, oldTrigger) => {
@@ -79,4 +92,11 @@ watch(
   },
   { flush: 'post' }
 )
+onUnmounted(() => {
+  popperInstance?.destroy()
+})
+defineExpose<TooltipInstance>({
+  show: open,
+  hide: close
+})
 </script>
