@@ -11,7 +11,7 @@ import type { ButtonInstance } from './components/Button/types'
 const buttonRef = ref<ButtonInstance | null>(null)
 const overlayNode = ref<HTMLElement>()
 const triggerNode = ref<HTMLElement>()
-const trigger = ref<any>('hover')
+const trigger = ref<any>('click')
 let popperInstance: Instance | null = null
 const openedValue = ref(['a'])
 onMounted(() => {

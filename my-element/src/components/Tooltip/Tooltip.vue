@@ -1,5 +1,5 @@
 <template>
-  <div class="vk-tooltip" v-on="outerEvents">
+  <div class="vk-tooltip" ref="popperContainerNode" v-on="outerEvents">
     <div class="vk-tooltip__trigger" ref="triggerNode" v-on="events">
       <slot />
     </div>
@@ -15,6 +15,7 @@ import { ref, watch, reactive } from 'vue'
 import { createPopper } from '@popperjs/core'
 import type { Instance } from '@popperjs/core'
 import type { TooltipProps, TooltipEmits } from './types'
+import useClickOutside from '@/hooks/useClickOutside'
 const props = withDefaults(defineProps<TooltipProps>(), {
   placement: 'bottom',
   trigger: 'hover'
@@ -23,6 +24,7 @@ const emits = defineEmits<TooltipEmits>()
 const isOpen = ref(false)
 const popperNode = ref<HTMLElement>()
 const triggerNode = ref<HTMLElement>()
+const popperContainerNode = ref<HTMLElement>()
 let popperInstance: Instance | null = null
 let events: Record<string, any> = reactive({})
 let outerEvents: Record<string, any> = reactive({})
@@ -38,6 +40,11 @@ const close = () => {
   isOpen.value = false
   emits('visible-change', false)
 }
+useClickOutside(popperContainerNode, () => {
+  if (props.trigger === 'click' && isOpen.value) {
+    close()
+  }
+})
 const attachEvents = () => {
   if (props.trigger === 'hover') {
     events['mouseenter'] = open
@@ -47,13 +54,16 @@ const attachEvents = () => {
   }
 }
 attachEvents()
-watch(() => props.trigger, (newTrigger, oldTrigger) => {
-    if(newTrigger !== oldTrigger) {
-        events = {}
-        outerEvents = {}
-        attachEvents()
+watch(
+  () => props.trigger,
+  (newTrigger, oldTrigger) => {
+    if (newTrigger !== oldTrigger) {
+      events = {}
+      outerEvents = {}
+      attachEvents()
     }
-})
+  }
+)
 watch(
   isOpen,
   (newValue) => {
