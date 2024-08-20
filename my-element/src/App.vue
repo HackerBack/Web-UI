@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import type { Options } from '@popperjs/core'
 import Tooltip from './components/Tooltip/Tooltip.vue'
 import { createPopper } from '@popperjs/core'
 import type { Instance } from '@popperjs/core'
@@ -14,6 +15,7 @@ const tooltipRef = ref<TooltipInstance | null>(null)
 const overlayNode = ref<HTMLElement>()
 const triggerNode = ref<HTMLElement>()
 const trigger = ref<any>('click')
+const options: Partial<Options> = { placement: 'right-end', strategy: 'fixed' }
 const open = () => {
   tooltipRef?.value?.show()
 }
@@ -38,7 +40,7 @@ onMounted(() => {
 
 <template>
   <header>
-    <Tooltip placement="right" :trigger="trigger" manual ref="tooltipRef">
+    <Tooltip placement="right" :trigger="trigger" manual ref="tooltipRef" :popper-options="options">
       <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
       <template #content>
         <h1>Hello Tooltip</h1>
