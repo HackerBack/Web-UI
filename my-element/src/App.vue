@@ -14,8 +14,8 @@ const buttonRef = ref<ButtonInstance | null>(null)
 const tooltipRef = ref<TooltipInstance | null>(null)
 const overlayNode = ref<HTMLElement>()
 const triggerNode = ref<HTMLElement>()
-const trigger = ref<any>('click')
-const options: Partial<Options> = { placement: 'right-end', strategy: 'fixed' }
+const trigger = ref<any>('hover')
+// const options: Partial<Options> = { placement: 'right-end', strategy: 'fixed' }
 const open = () => {
   tooltipRef?.value?.show()
 }
@@ -40,7 +40,13 @@ onMounted(() => {
 
 <template>
   <header>
-    <Tooltip placement="right" :trigger="trigger" manual ref="tooltipRef" :popper-options="options">
+    <Tooltip
+      placement="right"
+      :trigger="trigger"
+      ref="tooltipRef"
+      :open-delay="1000"
+      :close-delay="1000"
+    >
       <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
       <template #content>
         <h1>Hello Tooltip</h1>
