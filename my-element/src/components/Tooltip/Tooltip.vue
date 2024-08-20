@@ -4,10 +4,11 @@
       <slot />
     </div>
     <Transition :name="transition">
-      <div v-if="isOpen" class="vk-tooltip__content" ref="popperNode">
+      <div v-if="isOpen" class="vk-tooltip__popper" ref="popperNode">
         <slot name="content">
           {{ content }}
         </slot>
+        <div id="arrow" data-popper-arrow></div>
       </div>
     </Transition>
   </div>
@@ -19,6 +20,9 @@ import type { Instance } from '@popperjs/core'
 import { debounce } from 'lodash-es'
 import type { TooltipProps, TooltipEmits, TooltipInstance } from './types'
 import useClickOutside from '@/hooks/useClickOutside'
+defineOptions({
+  name: 'VKTooltip'
+})
 const props = withDefaults(defineProps<TooltipProps>(), {
   placement: 'bottom',
   trigger: 'hover',
@@ -39,6 +43,14 @@ let closeTimes = 0
 const popperOptions = computed(() => {
   return {
     placement: props.placement,
+    modifiers: [
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 9]
+        }
+      }
+    ],
     ...props.popperOptions
   }
 })
@@ -75,7 +87,7 @@ const togglePopper = () => {
 }
 useClickOutside(popperContainerNode, () => {
   if (props.trigger === 'click' && isOpen.value && !props.manual) {
-    closeDebounce
+    closeFinal()
   }
 })
 const attachEvents = () => {
