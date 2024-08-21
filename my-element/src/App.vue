@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, h } from 'vue'
 import type { Options } from '@popperjs/core'
 import Tooltip from './components/Tooltip/Tooltip.vue'
+import Dropdown from './components/Dropdown/Dropdown'
+import type { MenuOption } from './components/Dropdown/types'
 import { createPopper } from '@popperjs/core'
 import type { Instance } from '@popperjs/core'
 import Button from './components/Button/Button.vue'
@@ -14,8 +16,13 @@ const buttonRef = ref<ButtonInstance | null>(null)
 const tooltipRef = ref<TooltipInstance | null>(null)
 const overlayNode = ref<HTMLElement>()
 const triggerNode = ref<HTMLElement>()
-const trigger = ref<any>('hover')
-// const options: Partial<Options> = { placement: 'right-end', strategy: 'fixed' }
+const trigger = ref<any>('click')
+const options: MenuOption[] = [
+  { key: 1, label: h('b', 'this is bold') },
+  { key: 2, label: 'item2', disabled: true },
+  { key: 3, label: 'item3', divided: true },
+  { key: 4, label: 'item4' }
+]
 const open = () => {
   tooltipRef?.value?.show()
 }
@@ -40,18 +47,20 @@ onMounted(() => {
 
 <template>
   <header>
-    <Tooltip
-      placement="right"
+    <Dropdown
+      placement="bottom"
       :trigger="trigger"
+      :menu-options="options"
+      @visible-change="($event) => console.log($event)"
+      @select="($event) => console.log($event)"
+      manual
       ref="tooltipRef"
-      :open-delay="1000"
-      :close-delay="1000"
     >
       <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
       <template #content>
         <h1>Hello Tooltip</h1>
       </template>
-    </Tooltip>
+    </Dropdown>
   </header>
   <!-- <Icon icon="fa-solid fa-user-secret" /> -->
   <Icon icon="arrow-up" size="2xl" type="danger" color="yellow" />
