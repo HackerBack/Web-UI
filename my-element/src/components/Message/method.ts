@@ -16,15 +16,18 @@ export const createMessage = (props: CreateMessageProps) => {
   }
   const newProps = {
     ...props,
+    id,
     onDestory: destory
   }
   const vnode = h(MessageConstructor, newProps)
   render(vnode, container)
   // 非空断言操作符
   document.body.appendChild(container.firstElementChild!)
+  const vm = vnode.component!
   const instance = {
     id,
     vnode,
+    vm,
     props: newProps
   }
   instances.push(instance)
@@ -33,4 +36,13 @@ export const createMessage = (props: CreateMessageProps) => {
 
 export const getLastInstance = () => {
   return instances.at(-1)
+}
+export const getLastBottomOffset = (id: string) => {
+    const idx = instances.findIndex((instance) => instance.id === id)
+    if(idx <= 0) {
+        return 0
+    } else {
+        const prev = instances[idx - 1]
+        return prev.vm.exposed!.bottomOffset.value
+    }
 }
