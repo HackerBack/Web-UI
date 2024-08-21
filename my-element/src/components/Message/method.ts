@@ -14,6 +14,14 @@ export const createMessage = (props: CreateMessageProps) => {
     instances.splice(idx, 1)
     render(null, container)
   }
+  // 手动调用删除，其实就是手动的调整组件中visible的值
+  // visible是通过expose传出来的
+  const manualDestory = () => {
+    const instance = instances.find(instance => instance.id === id)
+    if(instance) {
+        instance.vm.exposed!.visible.value = false
+    }
+  }
   const newProps = {
     ...props,
     id,
@@ -28,7 +36,8 @@ export const createMessage = (props: CreateMessageProps) => {
     id,
     vnode,
     vm,
-    props: newProps
+    props: newProps,
+    destory: manualDestory
   }
   instances.push(instance)
   return instance

@@ -67,7 +67,8 @@ watch(visible, (newValue) => {
   }
 })
 defineExpose({
-  bottomOffset
+  bottomOffset,
+  visible
 })
 </script>
 <style>

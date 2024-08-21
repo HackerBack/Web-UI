@@ -15,5 +15,6 @@ export interface MessageContext {
     vnode: VNode
     vm: ComponentInternalInstance
     props: MessageProps
+    destory: () => void
 }
 export type CreateMessageProps = Omit<MessageProps, 'onDestory' | 'id'>

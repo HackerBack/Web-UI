@@ -34,7 +34,7 @@ const close = () => {
 let popperInstance: Instance | null = null
 const openedValue = ref(['a'])
 onMounted(() => {
-  createMessage({ message: 'hello world', duration: 0 })
+  const instance = createMessage({ message: 'hello world', duration: 0 })
   createMessage({ message: 'hello world again', duration: 0 })
   createMessage({ message: 'hello world 3', duration: 0 })
   if (buttonRef.value) {
@@ -46,6 +46,7 @@ onMounted(() => {
 
   setTimeout(() => {
     popperInstance?.setOptions({ placement: 'bottom' })
+    instance.destory()
   }, 2000)
 })
 </script>
