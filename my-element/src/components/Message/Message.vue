@@ -45,7 +45,8 @@ const topOffset = computed(() => props.offset + lastOffset.value)
 // 这个元素为下一个元素预留的offset，也就是它最低端bottom的值
 const bottomOffset = computed(() => height.value + topOffset.value)
 const cssStyle = computed(() => ({
-  top: topOffset.value + 'px'
+  top: topOffset.value + 'px',
+  zIndex: props.zIndex
 }))
 function startTimer() {
   if (props.duration == 0) {

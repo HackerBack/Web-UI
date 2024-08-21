@@ -2,9 +2,11 @@ import { render, h, shallowReactive } from 'vue'
 import type { MessageProps } from './types'
 import type { CreateMessageProps, MessageContext } from './types'
 import MessageConstructor from './Message.vue'
+import useZIndex from '@/hooks/useZIndex'
 let seed = 1
 const instances: MessageContext[] = shallowReactive([])
 export const createMessage = (props: CreateMessageProps) => {
+  const { nextZIndex } = useZIndex()
   const id = `message_${seed++}`
   const container = document.createElement('div')
   const destory = () => {
@@ -17,14 +19,15 @@ export const createMessage = (props: CreateMessageProps) => {
   // 手动调用删除，其实就是手动的调整组件中visible的值
   // visible是通过expose传出来的
   const manualDestory = () => {
-    const instance = instances.find(instance => instance.id === id)
-    if(instance) {
-        instance.vm.exposed!.visible.value = false
+    const instance = instances.find((instance) => instance.id === id)
+    if (instance) {
+      instance.vm.exposed!.visible.value = false
     }
   }
   const newProps = {
     ...props,
     id,
+    zIndex: nextZIndex(),
     onDestory: destory
   }
   const vnode = h(MessageConstructor, newProps)

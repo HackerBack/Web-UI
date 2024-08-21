@@ -7,6 +7,7 @@ export interface MessageProps {
     type?: 'info' | 'success' | 'warning' | 'error'
     onDestory: () => void
     id: string
+    zIndex?: number
     offset?: number
 }
 
@@ -17,4 +18,4 @@ export interface MessageContext {
     props: MessageProps
     destory: () => void
 }
-export type CreateMessageProps = Omit<MessageProps, 'onDestory' | 'id'>
+export type CreateMessageProps = Omit<MessageProps, 'onDestory' | 'id' | 'zIndex'>
