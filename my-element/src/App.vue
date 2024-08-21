@@ -11,6 +11,7 @@ import Collapse from './components/Collapse/Collapse.vue'
 import CollapseItem from './components/Collapse/CollapseItem.vue'
 import Icon from './components/Icon/Icon.vue'
 import Message from './components/Message/Message.vue'
+import { createMessage } from './components/Message/method'
 import type { ButtonInstance } from './components/Button/types'
 import type { TooltipInstance } from './components/Tooltip/types'
 const buttonRef = ref<ButtonInstance | null>(null)
@@ -33,6 +34,8 @@ const close = () => {
 let popperInstance: Instance | null = null
 const openedValue = ref(['a'])
 onMounted(() => {
+  createMessage({ message: 'hello world', duration: 0 })
+  createMessage({ message: 'hello world again' })
   if (buttonRef.value) {
     console.log('buttonRef', buttonRef.value.ref)
   }
@@ -47,7 +50,6 @@ onMounted(() => {
 </script>
 
 <template>
-  <Message message="hello message" :duration="0" show-close></Message>
   <header>
     <Dropdown
       placement="bottom"
