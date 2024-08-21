@@ -1,26 +1,28 @@
 <template>
-  <div
-    class="vk-message"
-    v-show="visible"
-    :class="{
-      [`vk-message--${type}`]: type,
-      'is-close': showClose
-    }"
-    role="alert"
-    ref="messageRef"
-    :style="cssStyle"
-    @mouseenter="clearTimer"
-    @mouseleave="startTimer"
-  >
-    <div class="vk-message__content">
-      <slot>
-        <RenderVnode :vNode="message" v-if="message" />
-      </slot>
+  <Transition :name="transitionName" @afterLeave="destoryComponent" @enter="updateHeight">
+    <div
+      class="vk-message"
+      v-show="visible"
+      :class="{
+        [`vk-message--${type}`]: type,
+        'is-close': showClose
+      }"
+      role="alert"
+      ref="messageRef"
+      :style="cssStyle"
+      @mouseenter="clearTimer"
+      @mouseleave="startTimer"
+    >
+      <div class="vk-message__content">
+        <slot>
+          <RenderVnode :vNode="message" v-if="message" />
+        </slot>
+      </div>
+      <div class="vk-message__close" v-if="showClose">
+        <Icon @click.stop="($event) => (visible = false)" icon="xmark" />
+      </div>
     </div>
-    <div class="vk-message__close" v-if="showClose">
-      <Icon @click.stop="($event) => (visible = false)" icon="xmark" />
-    </div>
-  </div>
+  </Transition>
 </template>
 <script setup lang="ts">
 import { onMounted, ref, watch, computed, nextTick, getCurrentInstance } from 'vue'
@@ -32,7 +34,8 @@ import useEventListener from '@/hooks/useEventListener'
 const props = withDefaults(defineProps<MessageProps>(), {
   duration: 3000,
   type: 'info',
-  offset: 20
+  offset: 20,
+  transitionName: 'fade-up'
 })
 const visible = ref(false)
 const messageRef = ref<HTMLDivElement>()
@@ -66,8 +69,8 @@ function clearTimer() {
 onMounted(async () => {
   visible.value = true
   startTimer()
-  await nextTick()
-  height.value = messageRef.value!.getBoundingClientRect().height
+  // await nextTick()
+  // height.value = messageRef.value!.getBoundingClientRect().height
 })
 function keydown(e: Event) {
   const event = e as KeyboardEvent
@@ -76,24 +79,19 @@ function keydown(e: Event) {
   }
 }
 useEventListener(document, 'keydown', keydown)
-watch(visible, (newValue) => {
-  if (!newValue) {
-    props.onDestory()
-  }
-})
+// watch(visible, (newValue) => {
+//   if (!newValue) {
+//     props.onDestory()
+//   }
+// })
+function destoryComponent() {
+  props.onDestory()
+}
+function updateHeight() {
+  height.value = messageRef.value!.getBoundingClientRect().height
+}
 defineExpose({
   bottomOffset,
   visible
 })
 </script>
-<style>
-.vk-message {
-  width: max-content;
-  position: fixed;
-  left: 50%;
-  top: 20px;
-  transform: translate(-50%);
-  border: 1px solid blue;
-}
-</style>
-10
