@@ -7,4 +7,9 @@ export interface MessageProps {
     onDestory: () => void
 }
 
+export interface MessageContext {
+    id: string
+    vnode: VNode
+    props: MessageProps
+}
 export type CreateMessageProps = Omit<MessageProps, 'onDestory'>

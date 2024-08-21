@@ -14,7 +14,7 @@
       </slot>
     </div>
     <div class="vk-message__close" v-if="showClose">
-      <Icon @click.stop="$event => visible = false" icon="xmark" />
+      <Icon @click.stop="($event) => (visible = false)" icon="xmark" />
     </div>
   </div>
 </template>
@@ -23,11 +23,14 @@ import { onMounted, ref, watch } from 'vue'
 import type { MessageProps } from './types'
 import RenderVnode from '../Common/RenderVnode'
 import Icon from '../Icon/Icon.vue'
+import { getLastInstance } from './method'
 const props = withDefaults(defineProps<MessageProps>(), {
   duration: 3000,
   type: 'info'
 })
 const visible = ref(false)
+const prevInstance = getLastInstance()
+console.log('prec', prevInstance)
 function startTimer() {
   if (props.duration == 0) {
     return
@@ -48,11 +51,11 @@ watch(visible, (newValue) => {
 </script>
 <style>
 .vk-message {
-    width: max-content;
-    position: fixed;
-    left: 50%;
-    top: 20px;
-    transform: translate(-50%);
-    border: 1px solid blue;
+  width: max-content;
+  position: fixed;
+  left: 50%;
+  top: 20px;
+  transform: translate(-50%);
+  border: 1px solid blue;
 }
 </style>
