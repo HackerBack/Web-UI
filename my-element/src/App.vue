@@ -35,7 +35,7 @@ let popperInstance: Instance | null = null
 const openedValue = ref(['a'])
 onMounted(() => {
   const instance = createMessage({ message: 'hello world', duration: 0 })
-  createMessage({ message: 'hello world again', duration: 0 })
+  createMessage({ message: 'hello world again', duration: 1000 })
   createMessage({ message: 'hello world 3', duration: 0 })
   if (buttonRef.value) {
     console.log('buttonRef', buttonRef.value.ref)
