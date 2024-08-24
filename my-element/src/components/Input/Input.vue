@@ -8,7 +8,8 @@
       'is-prepend': $slots.prepend,
       'is-append': $slots.append,
       'is-prefix': $slots.prefix,
-      'is-suffix': $slots.suffix
+      'is-suffix': $slots.suffix,
+      'is-focus': isFocus
     }"
   >
     <!-- input -->
@@ -28,10 +29,25 @@
           :disabled="disabled"
           v-model="innerValue"
           @input="handleInput"
+          @focus="handleFocus"
+          @blur="handleBlur"
         />
         <!-- suffix slot -->
-        <span v-if="$slots.suffix" class="vk-input__suffix">
+        <span v-if="$slots.suffix || showClear || showPasswordArea" class="vk-input__suffix">
           <slot name="suffix" />
+          <Icon icon="circle-xmark" v-if="showClear" class="vk-input__clear" @click="clear" />
+          <Icon
+            icon="eye"
+            v-if="showPasswordArea && passwordVisible"
+            class="vk-input__password"
+            @click="togglePasswordVisible"
+          />
+          <Icon
+            icon="eye-slash"
+            v-if="showPasswordArea && !passwordVisible"
+            class="vk-input__password"
+            @click="togglePasswordVisible"
+          />
         </span>
       </div>
       <!-- append slot -->
@@ -46,13 +62,16 @@
         :disabled="disabled"
         v-model="innerValue"
         @input="handleInput"
+        @focus="handleFocus"
+        @blur="handleBlur"
       />
     </template>
   </div>
 </template>
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 import type { InputProps, InputEmits } from './types'
+import Icon from '../Icon/Icon.vue'
 
 defineOptions({
   name: 'VKInput'
@@ -60,8 +79,28 @@ defineOptions({
 const props = withDefaults(defineProps<InputProps>(), { type: 'text' })
 const emits = defineEmits<InputEmits>()
 const innerValue = ref(props.modelValue)
+const isFocus = ref(false)
+const passwordVisible = ref(false)
+const showClear = computed(
+  () => props.clearable && !props.disabled && !!innerValue.value && isFocus.value
+)
+const showPasswordArea = computed(() => props.showPassword && !props.disabled && !!innerValue.value)
+const togglePasswordVisible = () => {
+  console.log('11111')
+  passwordVisible.value = !passwordVisible.value
+}
 const handleInput = () => {
   emits('update:modelValue', innerValue.value)
+}
+const handleFocus = () => {
+  isFocus.value = true
+}
+const handleBlur = () => {
+  isFocus.value = false
+}
+const clear = () => {
+  innerValue.value = ''
+  emits('update:modelValue', '')
 }
 watch(
   () => props.modelValue,

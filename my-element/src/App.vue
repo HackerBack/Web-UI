@@ -55,7 +55,8 @@ onMounted(() => {
 
 <template>
   <header>
-    <Input v-model="inputModelValue"></Input>
+    {{ inputModelValue }}
+    <Input v-model="inputModelValue" clearable showPassword />
     <Dropdown
       placement="bottom"
       :trigger="trigger"
