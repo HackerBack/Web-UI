@@ -10,6 +10,7 @@ import Button from './components/Button/Button.vue'
 import Collapse from './components/Collapse/Collapse.vue'
 import CollapseItem from './components/Collapse/CollapseItem.vue'
 import Icon from './components/Icon/Icon.vue'
+import Input from './components/Input/Input.vue'
 import Message from './components/Message/Message.vue'
 import { createMessage } from './components/Message/method'
 import type { ButtonInstance } from './components/Button/types'
@@ -25,6 +26,7 @@ const options: MenuOption[] = [
   { key: 3, label: 'item3', divided: true },
   { key: 4, label: 'item4' }
 ]
+const inputModelValue = ref('')
 const open = () => {
   tooltipRef?.value?.show()
 }
@@ -53,6 +55,7 @@ onMounted(() => {
 
 <template>
   <header>
+    <Input v-model="inputModelValue"></Input>
     <Dropdown
       placement="bottom"
       :trigger="trigger"
