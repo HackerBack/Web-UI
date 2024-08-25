@@ -12,4 +12,10 @@ description: Select 组件的文档
 
 <preview path="../demo/Select/Basic.vue" title="基础选择器" description="Select 基础选择器"></preview>
 
+#### 自定义模板
+
+你可以自定义如何来渲染每一个选项，使用`renderLabel`属性，它接受一个回调函数，返回vNode类型。
+
+<preview path="../demo/Select/CustomRender.vue" title="基础选择器" description="Select 基础选择器"></preview>
+
 
