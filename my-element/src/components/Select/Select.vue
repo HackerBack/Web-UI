@@ -16,9 +16,9 @@
       <Input
         v-model="states.inputValue"
         :disabled="disabled"
-        :placeholder="placeholder"
+        :placeholder="filteredPlaceholder"
         ref="inputRef"
-        :readonly="!filterable"
+        :readonly="!filterable || !isDropdownShow"
         @input="onFilter"
       >
         <template #suffix>
@@ -124,11 +124,29 @@ const generateFilterOptions = (searchValue: string) => {
 const onFilter = () => {
   generateFilterOptions(states.inputValue)
 }
+const filteredPlaceholder = computed(() => {
+  return props.filterable && states.selectOption && isDropdownShow.value
+    ? states.selectOption.label
+    : props.placeholder
+})
 const controlDropdown = (show: boolean) => {
   if (show) {
+    // filter模式
+    // 之前选择过对应的值
+    if (props.filterable && states.selectOption) {
+      states.inputValue = ''
+    }
+    // 进行一次默认选项的生成
+    if (props.filterable) {
+      generateFilterOptions(states.inputValue)
+    }
     tooltipRef.value.show()
   } else {
     tooltipRef.value.hide()
+    // blur的时候将之前的值回灌到input中
+    if (props.filterable) {
+      states.inputValue = states.selectOption ? states.selectOption.label : ''
+    }
   }
   isDropdownShow.value = show
   emits('visible-change', show)
