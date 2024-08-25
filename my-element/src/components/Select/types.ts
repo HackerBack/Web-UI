@@ -1,7 +1,7 @@
 // 选项属性
 export interface SelectOption {
   label: string
-  value: string | number
+  value: string
   disabled?: boolean
 }
 
@@ -12,6 +12,11 @@ export interface SelectProps {
   // 一些基本表单属性
   placeholder: string
   disabled: boolean
+}
+
+export interface SelectStates {
+  inputValue: string
+  selectOption: null | SelectOption
 }
 
 export interface SelectEmits {
