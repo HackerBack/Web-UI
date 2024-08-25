@@ -10,7 +10,7 @@ export interface SelectOption {
 export interface SelectProps {
   modelValue: string | number
   // 选项
-  options: SelectOption[]
+  options?: SelectOption[]
   // 一些基本表单属性
   placeholder: string
   disabled: boolean
@@ -18,16 +18,20 @@ export interface SelectProps {
   renderLabel?: RenderLabelFunc
   filterable?: boolean
   filterMethod?: CustomFilterFunc
+  remote?: boolean
+  remoteMethod?: CustomFilterRemoteFunc
 }
 
 export interface SelectStates {
   inputValue: string
   selectOption: null | SelectOption
   mouseHover: boolean
+  loading: boolean
 }
 
 export type RenderLabelFunc = (option: SelectOption) => VNode
 export type CustomFilterFunc = (value: string) => SelectOption[]
+export type CustomFilterRemoteFunc = (value: string) => Promise<SelectOption[]>
 
 export interface SelectEmits {
   (e: 'change', value: string | number): void

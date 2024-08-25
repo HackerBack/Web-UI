@@ -19,7 +19,7 @@
         :placeholder="filteredPlaceholder"
         ref="inputRef"
         :readonly="!filterable || !isDropdownShow"
-        @input="onFilter"
+        @input="debounceOnFilter"
       >
         <template #suffix>
           <Icon
@@ -38,6 +38,12 @@
         </template>
       </Input>
       <template #content>
+        <div class="vk-select__loading" v-if="states.loading">
+          <Icon icon="spinner" spin />
+        </div>
+        <div class="vk-select__nodata" v-else-if="filterable && filteredOptions.length === 0">
+          no matching data
+        </div>
         <ul class="vk-select__menu">
           <template v-for="(item, index) in filteredOptions" :key="index">
             <li
@@ -67,7 +73,7 @@ import Input from '../Input/Input.vue'
 import Icon from '../Icon/Icon.vue'
 import RenderVnode from '../Common/RenderVnode'
 import type { InputInstance } from '../Input/types'
-import { isFunction } from 'lodash-es'
+import { isFunction, debounce } from 'lodash-es'
 
 const findOption = (value: string | number) => {
   const option = props.options.find((item) => item.value === value)
@@ -76,7 +82,10 @@ const findOption = (value: string | number) => {
 defineOptions({
   name: 'VkSelect'
 })
-const props = defineProps<SelectProps>()
+const props = withDefaults(defineProps<SelectProps>(), {
+  options: () => []
+})
+const timeout = computed(() => (props.remote ? 300 : 0))
 const emits = defineEmits<SelectEmits>()
 const initialOption = findOption(props.modelValue)
 const tooltipRef = ref() as Ref<TooltipInstance>
@@ -84,7 +93,8 @@ const inputRef = ref() as Ref<InputInstance>
 const states = reactive<SelectStates>({
   inputValue: initialOption ? initialOption.label : '',
   selectOption: initialOption,
-  mouseHover: false
+  mouseHover: false,
+  loading: false
 })
 const isDropdownShow = ref(false)
 const popperOptions: any = {
@@ -113,10 +123,20 @@ watch(
     filteredOptions.value = newOptions
   }
 )
-const generateFilterOptions = (searchValue: string) => {
+const generateFilterOptions = async (searchValue: string) => {
   if (!props.filterable) return
   if (props.filterMethod && isFunction(props.filterMethod)) {
     filteredOptions.value = props.filterMethod(searchValue)
+  } else if (props.remote && props.remoteMethod && isFunction(props.remoteMethod)) {
+    states.loading = true
+    try {
+      filteredOptions.value = await props.remoteMethod(searchValue)
+    } catch (e) {
+      console.error(e)
+      filteredOptions.value = []
+    } finally {
+      states.loading = false
+    }
   } else {
     filteredOptions.value = props.options.filter((options) => options.label.includes(searchValue))
   }
@@ -124,6 +144,9 @@ const generateFilterOptions = (searchValue: string) => {
 const onFilter = () => {
   generateFilterOptions(states.inputValue)
 }
+const debounceOnFilter = debounce(() => {
+  onFilter()
+}, timeout.value)
 const filteredPlaceholder = computed(() => {
   return props.filterable && states.selectOption && isDropdownShow.value
     ? states.selectOption.label
