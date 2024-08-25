@@ -20,6 +20,7 @@
         ref="inputRef"
         :readonly="!filterable || !isDropdownShow"
         @input="debounceOnFilter"
+        @keydown="handleKeydown"
       >
         <template #suffix>
           <Icon
@@ -173,6 +174,20 @@ const controlDropdown = (show: boolean) => {
   }
   isDropdownShow.value = show
   emits('visible-change', show)
+}
+const handleKeydown = (e: KeyboardEvent) => {
+  switch (e.key) {
+    case 'Enter':
+      toggleDropdown()
+      break
+    case 'Escape':
+      if (isDropdownShow.value) {
+        controlDropdown(false)
+      }
+      break
+    default:
+      break
+  }
 }
 const showClearIcon = computed(() => {
   // * hover 上去
