@@ -1,7 +1,7 @@
 <template>
   <div class="vk-select" :class="{ 'is-disabled': disabled }" @click="toggleDropdown">
-    <Tooltip ref="tooltipRef" placement="bottom-start" manual>
-      <Input v-model="states.inputValue" :disabled="disabled" :placeholder="placeholder" />
+    <Tooltip ref="tooltipRef" placement="bottom-start" :popperOptions="popperOptions" manual>
+      <Input v-model="states.inputValue" :disabled="disabled" :placeholder="placeholder" readonly />
       <template #content>
         <ul class="vk-select__menu">
           <template v-for="(item, index) in options" :key="index">
@@ -15,7 +15,6 @@
               @click.stop="itemSelect(item)"
             >
               {{ item.label }}
-              <span v-if="states.selectOption?.value === item.value">Selected!</span>
             </li>
           </template>
         </ul>
@@ -47,6 +46,25 @@ const states = reactive<SelectStates>({
   selectOption: initialOption
 })
 const isDropdownShow = ref(false)
+const popperOptions: any = {
+  modifiers: [
+    {
+      name: 'offset',
+      options: {
+        offset: [0, 9]
+      }
+    },
+    {
+      name: 'sameWidth',
+      enabled: true,
+      fn: ({ state }: { state: any }) => {
+        state.styles.popper.width = `${state.rects.reference.width}px`
+      },
+      phase: 'beforeWrite',
+      requires: ['computeStyles']
+    }
+  ]
+}
 const controlDropdown = (show: boolean) => {
   if (show) {
     tooltipRef.value.show()
