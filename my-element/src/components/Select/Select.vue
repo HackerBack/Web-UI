@@ -1,7 +1,23 @@
 <template>
   <div class="vk-select" :class="{ 'is-disabled': disabled }" @click="toggleDropdown">
-    <Tooltip ref="tooltipRef" placement="bottom-start" :popperOptions="popperOptions" manual>
-      <Input v-model="states.inputValue" :disabled="disabled" :placeholder="placeholder" readonly />
+    <Tooltip
+      ref="tooltipRef"
+      placement="bottom-start"
+      :popperOptions="popperOptions"
+      @click-outside="controlDropdown(false)"
+      manual
+    >
+      <Input
+        v-model="states.inputValue"
+        :disabled="disabled"
+        :placeholder="placeholder"
+        ref="inputRef"
+        readonly
+      >
+        <template #suffix>
+          <Icon icon="angle-down" class="header-angle" :class="{ 'is-active': isDropdownShow }" />
+        </template>
+      </Input>
       <template #content>
         <ul class="vk-select__menu">
           <template v-for="(item, index) in options" :key="index">
@@ -29,8 +45,10 @@ import type { SelectProps, SelectEmits, SelectOption, SelectStates } from './typ
 import Tooltip from '../Tooltip/Tooltip.vue'
 import type { TooltipInstance } from '../Tooltip/types'
 import Input from '../Input/Input.vue'
+import Icon from '../Icon/Icon.vue'
+import type { InputInstance } from '../Input/types'
 
-const findOption = (value: string) => {
+const findOption = (value: string | number) => {
   const option = props.options.find((item) => item.value === value)
   return option ? option : null
 }
@@ -41,6 +59,7 @@ const props = defineProps<SelectProps>()
 const emits = defineEmits<SelectEmits>()
 const initialOption = findOption(props.modelValue)
 const tooltipRef = ref() as Ref<TooltipInstance>
+const inputRef = ref() as Ref<InputInstance>
 const states = reactive<SelectStates>({
   inputValue: initialOption ? initialOption.label : '',
   selectOption: initialOption
@@ -90,5 +109,6 @@ const itemSelect = (e: SelectOption) => {
   emits('change', e.value)
   emits('update:modelValue', e.value)
   controlDropdown(false)
+  inputRef.value.ref.focus()
 }
 </script>

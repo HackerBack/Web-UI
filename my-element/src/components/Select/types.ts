@@ -1,12 +1,12 @@
 // 选项属性
 export interface SelectOption {
   label: string
-  value: string
+  value: string | number
   disabled?: boolean
 }
 
 export interface SelectProps {
-  modelValue: string
+  modelValue: string | number
   // 选项
   options: SelectOption[]
   // 一些基本表单属性
@@ -20,7 +20,7 @@ export interface SelectStates {
 }
 
 export interface SelectEmits {
-  (e: 'change', value: string): void
-  (e: 'update:modelValue', value: string): void
+  (e: 'change', value: string | number): void
+  (e: 'update:modelValue', value: string | number): void
   (e: 'visible-change', value: boolean): void
 }
