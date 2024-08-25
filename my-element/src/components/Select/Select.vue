@@ -1,5 +1,11 @@
 <template>
-  <div class="vk-select" :class="{ 'is-disabled': disabled }" @click="toggleDropdown">
+  <div
+    class="vk-select"
+    :class="{ 'is-disabled': disabled }"
+    @click="toggleDropdown"
+    @mouseenter="states.mouseHover = true"
+    @mouseleave="states.mouseHover = false"
+  >
     <Tooltip
       ref="tooltipRef"
       placement="bottom-start"
@@ -15,7 +21,19 @@
         readonly
       >
         <template #suffix>
-          <Icon icon="angle-down" class="header-angle" :class="{ 'is-active': isDropdownShow }" />
+          <Icon
+            icon="circle-xmark"
+            v-if="showClearIcon"
+            class="vk-input__clear"
+            @mousedown.prevent="NOOP"
+            @click.stop="onClear"
+          />
+          <Icon
+            v-else
+            icon="angle-down"
+            class="header-angle"
+            :class="{ 'is-active': isDropdownShow }"
+          />
         </template>
       </Input>
       <template #content>
@@ -39,7 +57,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
+import { ref, reactive, computed } from 'vue'
 import type { Ref } from 'vue'
 import type { SelectProps, SelectEmits, SelectOption, SelectStates } from './types'
 import Tooltip from '../Tooltip/Tooltip.vue'
@@ -62,7 +80,8 @@ const tooltipRef = ref() as Ref<TooltipInstance>
 const inputRef = ref() as Ref<InputInstance>
 const states = reactive<SelectStates>({
   inputValue: initialOption ? initialOption.label : '',
-  selectOption: initialOption
+  selectOption: initialOption,
+  mouseHover: false
 })
 const isDropdownShow = ref(false)
 const popperOptions: any = {
@@ -93,6 +112,23 @@ const controlDropdown = (show: boolean) => {
   isDropdownShow.value = show
   emits('visible-change', show)
 }
+const showClearIcon = computed(() => {
+  // * hover 上去
+  // * props.clearable 为 true
+  // 必须要有选择过选项
+  // Input 的值不能为空
+  return (
+    props.clearable && states.mouseHover && states.selectOption && states.inputValue.trim() !== ''
+  )
+})
+const onClear = () => {
+  states.selectOption = null
+  states.inputValue = ''
+  emits('clear')
+  emits('change', '')
+  emits('update:modelValue', '')
+}
+const NOOP = () => {}
 const toggleDropdown = () => {
   if (props.disabled) return
   if (isDropdownShow.value) {
