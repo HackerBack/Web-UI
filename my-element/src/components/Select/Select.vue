@@ -51,7 +51,8 @@
               class="vk-select__menu-item"
               :class="{
                 'is-disabled': item.disabled,
-                'is-selected': states.selectOption?.value === item.value
+                'is-selected': states.selectOption?.value === item.value,
+                'is-hightlighted': states.highlightedIndex === index
               }"
               :id="`selecet-item-${item.value}`"
               @click.stop="itemSelect(item)"
@@ -95,7 +96,8 @@ const states = reactive<SelectStates>({
   inputValue: initialOption ? initialOption.label : '',
   selectOption: initialOption,
   mouseHover: false,
-  loading: false
+  loading: false,
+  highlightedIndex: -1
 })
 const isDropdownShow = ref(false)
 const popperOptions: any = {
@@ -141,6 +143,7 @@ const generateFilterOptions = async (searchValue: string) => {
   } else {
     filteredOptions.value = props.options.filter((options) => options.label.includes(searchValue))
   }
+  states.highlightedIndex = -1
 }
 const onFilter = () => {
   generateFilterOptions(states.inputValue)
@@ -171,6 +174,7 @@ const controlDropdown = (show: boolean) => {
     if (props.filterable) {
       states.inputValue = states.selectOption ? states.selectOption.label : ''
     }
+    states.highlightedIndex = -1
   }
   isDropdownShow.value = show
   emits('visible-change', show)
@@ -178,11 +182,46 @@ const controlDropdown = (show: boolean) => {
 const handleKeydown = (e: KeyboardEvent) => {
   switch (e.key) {
     case 'Enter':
-      toggleDropdown()
+      if (!isDropdownShow.value) {
+        controlDropdown(true)
+      } else {
+        if (states.highlightedIndex > -1 && filteredOptions.value[states.highlightedIndex]) {
+          itemSelect(filteredOptions.value[states.highlightedIndex])
+        } else {
+          controlDropdown(false)
+        }
+      }
       break
     case 'Escape':
       if (isDropdownShow.value) {
         controlDropdown(false)
+      }
+      break
+    case 'ArrowUp':
+      e.preventDefault()
+      // states.hightlightedIndex = -1
+      if (filteredOptions.value.length > 0) {
+        if (states.highlightedIndex === -1 || states.highlightedIndex === 0) {
+          states.highlightedIndex = filteredOptions.value.length - 1
+        } else {
+          // move up
+          states.highlightedIndex--
+        }
+      }
+      break
+    case 'ArrowDown':
+      e.preventDefault()
+      // states.hightlightedIndex = -1
+      if (filteredOptions.value.length > 0) {
+        if (
+          states.highlightedIndex === -1 ||
+          states.highlightedIndex === filteredOptions.value.length - 1
+        ) {
+          states.highlightedIndex = 0
+        } else {
+          // move up
+          states.highlightedIndex++
+        }
       }
       break
     default:

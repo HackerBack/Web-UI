@@ -1,38 +1,24 @@
 ---
-title: Button | V-Element
-description: Button 组件的文档
+title: Icon | V-Element
+description: Icon 组件的文档
 ---
 
-# Button 按钮
+# Icon 图标
 
-常用的操作按钮。
+Web UI 提供了一套常用的图标集合。
 
 ## 基础用法
 
-使用 `type`、`plain`定义按钮的样式, 同时你可以使用 `disabled` 属性来定义按钮是否被禁用。
+使用 `type`、`plain`、`round` 和 `circle` 来定义按钮的样式。
 
 <preview path="../demo/Button/Basic.vue" title="基础用法" description="Button 组件的基础用法"></preview>
 
 ## 调整尺寸
 
 除了默认的大小，按钮组件还提供了几种额外的尺寸可供选择，以便适配不同的场景。
-
 使用 `size` 属性额外配置尺寸，可使用 `large`和`small`两种值。
 
 <preview path="../demo/Button/Size.vue" title="调整尺寸" description="Button 组件的尺寸调整"></preview>
-
-## 圆角和圆形按钮
-
-除了默认的形状，按钮组件还提供了额外的形状可供选择，以便适配不同的场景。
-使用 `round`与`circle` 属性可额外配置形状。
-
-## Loading效果
-
-通过`loading`属性可让图标展示为加载中的状态
-
-<preview path="../demo/Button/Loading.vue" title="调loading状态" description="Button 组件的loading状态"></preview>
-
-##
 
 ### Button Attributes
 
