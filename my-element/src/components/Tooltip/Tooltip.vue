@@ -25,6 +25,7 @@ defineOptions({
 })
 const props = withDefaults(defineProps<TooltipProps>(), {
   placement: 'bottom',
+  disabled: false,
   trigger: 'hover',
   transition: 'fade',
   openDelay: 0,
@@ -101,7 +102,7 @@ const attachEvents = () => {
     events['click'] = togglePopper
   }
 }
-if (!props.manual) {
+if (!props.manual && !props.disabled) {
   attachEvents()
 }
 watch(
@@ -110,6 +111,18 @@ watch(
     if (isManual) {
       events = {}
       outerEvents = {}
+    } else {
+      attachEvents()
+    }
+  }
+)
+watch(
+  () => props.disabled,
+  (isDisabled) => {
+    if (isDisabled) {
+      events = {}
+      outerEvents = {}
+      togglePopper()
     } else {
       attachEvents()
     }
