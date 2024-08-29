@@ -32,9 +32,7 @@ description: Button 组件的文档
 
 <preview path="../demo/Button/Loading.vue" title="调loading状态" description="Button 组件的loading状态"></preview>
 
-##
-
-### Button Attributes
+## Button 属性
 
 | 参数        | 说明                  | 类型                                                             | Default |
 | ----------- | --------------------- | ---------------------------------------------------------------- | ------- |
