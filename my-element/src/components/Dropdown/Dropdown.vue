@@ -11,11 +11,15 @@
     >
       <slot />
       <template #content>
-        <ul class="vk-dropdown-menu">
+        <ul class="vk-dropdown__menu">
           <template v-for="item in menuOptions" :key="item.key">
-            <li v-if="item.divided" role="separator" class="divided-placeholder" />
             <li
-              class="vk-dropdown_item"
+              v-if="item.divided"
+              role="separator"
+              class="divided-placeholder vk-dropdown__item"
+            />
+            <li
+              class="vk-dropdown__item"
               @click="($event) => itemClick(item)"
               :class="{ 'is-disabled': item.disabled, 'is-divided': item.divided }"
               :id="`dropdown-item-${item.key}`"
